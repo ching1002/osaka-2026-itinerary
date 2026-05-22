@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>大阪 5/27-5/31 五日行程</title>
+  <style>
+    :root {
+      --ink: #1f2933;
+      --muted: #667085;
+      --line: #d8e0e8;
+      --paper: #fffdfa;
+      --mist: #f3f7f6;
+      --sun: #f4a261;
+      --rain: #4f8fba;
+      --meal: #d9480f;
+      --green: #2a9d8f;
+      --blue: #2f6f9f;
+      --gold: #b7791f;
+      --shadow: 0 18px 45px rgba(31, 41, 51, .12);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Microsoft JhengHei", "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        linear-gradient(rgba(255,255,255,.82), rgba(255,255,255,.9)),
+        radial-gradient(circle at 18% 12%, rgba(244,162,97,.22), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(79,143,186,.18), transparent 30%),
+        linear-gradient(135deg, #f8f1df 0%, #ecf4ed 48%, #f7eadb 100%);
+      min-height: 100vh;
+      letter-spacing: 0;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: #145ea8;
+      font-weight: 700;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(20, 94, 168, .3);
+      overflow-wrap: anywhere;
+    }
+
+    a:hover { border-bottom-color: currentColor; }
+
+    .app-shell {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 330px;
+      display: grid;
+      align-items: end;
+      border-radius: var(--radius);
+      padding: 28px;
+      color: #fff;
+      background:
+        linear-gradient(90deg, rgba(18, 32, 48, .9), rgba(18, 32, 48, .48) 56%, rgba(18, 32, 48, .25)),
+        url("1.png") center / cover no-repeat;
+      box-shadow: var(--shadow);
+    }
+
+    .hero h1 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(2rem, 5vw, 4.2rem);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 740px;
+      margin: 14px 0 0;
+      color: rgba(255,255,255,.9);
+      font-size: 1.05rem;
+      line-height: 1.75;
+    }
+
+    .trip-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .fact {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 12px;
+      border: 1px solid rgba(255,255,255,.38);
+      border-radius: 999px;
+      background: rgba(255,255,255,.14);
+      color: #fff;
+      font-weight: 800;
+      backdrop-filter: blur(8px);
+    }
+
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      margin: 18px 0;
+      padding: 10px;
+      border: 1px solid rgba(216,224,232,.85);
+      border-radius: var(--radius);
+      background: rgba(255,253,250,.92);
+      box-shadow: 0 10px 30px rgba(31, 41, 51, .08);
+      backdrop-filter: blur(14px);
+    }
+
+    .day-tab,
+    .mode-tab,
+    .map-toggle {
+      min-height: 44px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 900;
+      letter-spacing: 0;
+      transition: .18s ease;
+    }
+
+    .day-tab:hover,
+    .mode-tab:hover,
+    .map-toggle:hover { background: #eef5f4; }
+
+    .day-tab.active {
+      color: #fff;
+      background: #1f5d65;
+      box-shadow: inset 0 -3px 0 rgba(255,255,255,.22);
+    }
+
+    .day-panel { display: none; }
+    .day-panel.active { display: block; }
+
+    .day-header {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .summary,
+    .quick-card,
+    .timeline-wrap,
+    .food-section,
+    .map-panel,
+    .notice {
+      border: 1px solid rgba(216,224,232,.95);
+      border-radius: var(--radius);
+      background: rgba(255,253,250,.96);
+      box-shadow: 0 14px 36px rgba(31, 41, 51, .08);
+    }
+
+    .summary {
+      padding: 22px;
+      border-left: 8px solid var(--green);
+    }
+
+    .summary h2,
+    .quick-card h3,
+    .food-section h3,
+    .timeline-wrap h3 {
+      margin: 0;
+      line-height: 1.22;
+      letter-spacing: 0;
+    }
+
+    .summary h2 {
+      font-size: clamp(1.55rem, 3vw, 2.45rem);
+    }
+
+    .summary p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      line-height: 1.75;
+      overflow-wrap: anywhere;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .quick-card {
+      padding: 16px;
+    }
+
+    .quick-card h3 {
+      font-size: .95rem;
+      color: #425466;
+    }
+
+    .quick-card p {
+      margin: 8px 0 0;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
+    .mode-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+      padding: 6px;
+      width: fit-content;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f8faf9;
+    }
+
+    .mode-tab {
+      padding: 0 14px;
+      color: #1f5d65;
+    }
+
+    .mode-tab.active {
+      color: #fff;
+      background: #1f5d65;
+    }
+
+    .route-map {
+      margin-bottom: 18px;
+    }
+
+    .map-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-color: rgba(216,224,232,.95);
+      background: rgba(255,253,250,.96);
+      box-shadow: 0 10px 26px rgba(31, 41, 51, .07);
+      text-align: left;
+    }
+
+    .map-panel {
+      display: none;
+      margin-top: 10px;
+      padding: 12px;
+    }
+
+    .map-panel.open { display: block; }
+
+    .map-panel img {
+      display: block;
+      width: 100%;
+      max-height: 82vh;
+      object-fit: contain;
+      border-radius: 6px;
+      background: #eef2f4;
+    }
+
+    .timeline-wrap {
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    .timeline {
+      position: relative;
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 92px;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      background: linear-gradient(var(--green), var(--blue));
+      border-radius: 999px;
+    }
+
+    .stop {
+      position: relative;
+      display: grid;
+      grid-template-columns: 78px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .time {
+      padding-top: 7px;
+      color: #31505e;
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.25;
+      text-align: right;
+    }
+
+    .stop-card {
+      position: relative;
+      padding: 14px 16px 14px 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(31, 41, 51, .06);
+    }
+
+    .stop-card::before {
+      content: "";
+      position: absolute;
+      left: -33px;
+      top: 17px;
+      width: 13px;
+      height: 13px;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 3px rgba(42,157,143,.24);
+    }
+
+    .stop-card h4 {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.35;
+      letter-spacing: 0;
+    }
+
+    .stop-card p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+    }
+
+    .stop.meal .stop-card {
+      border-color: rgba(217,72,15,.35);
+      background: linear-gradient(180deg, #fff8f2, #fff);
+    }
+
+    .stop.meal .stop-card::before {
+      background: var(--meal);
+      box-shadow: 0 0 0 3px rgba(217,72,15,.2);
+    }
+
+    .stop.rest .stop-card {
+      border-color: rgba(79,143,186,.3);
+      background: linear-gradient(180deg, #f5fbff, #fff);
+    }
+
+    .stop.rest .stop-card::before {
+      background: var(--rain);
+      box-shadow: 0 0 0 3px rgba(79,143,186,.2);
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: #31505e;
+      background: #edf5f3;
+      font-size: .82rem;
+      font-weight: 900;
+    }
+
+    .meal .tag {
+      color: #9a3412;
+      background: #ffedd5;
+    }
+
+    .food-section {
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .food-box {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      background: #fff;
+    }
+
+    .food-box h4 {
+      margin: 0 0 10px;
+      color: #334e68;
+      font-size: 1rem;
+    }
+
+    .food-box ul {
+      display: grid;
+      gap: 9px;
+      margin: 0;
+      padding-left: 18px;
+      line-height: 1.55;
+    }
+
+    .notice {
+      padding: 16px 18px;
+      margin-top: 18px;
+      border-left: 8px solid var(--gold);
+      color: #4b5563;
+      line-height: 1.7;
+    }
+
+    .no-map {
+      padding: 18px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .footer {
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: .92rem;
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    @media (max-width: 860px) {
+      .app-shell {
+        width: min(100% - 18px, 760px);
+        padding-top: 10px;
+      }
+
+      .hero {
+        min-height: 380px;
+        padding: 18px;
+        background-position: center;
+      }
+
+      .top-nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        position: static;
+      }
+
+      .day-header,
+      .food-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline::before {
+        left: 22px;
+      }
+
+      .stop {
+        grid-template-columns: 1fr;
+        gap: 6px;
+        padding-left: 44px;
+      }
+
+      .time {
+        padding-top: 0;
+        text-align: left;
+      }
+
+      .stop-card::before {
+        left: -29px;
+      }
+
+      .summary,
+      .timeline-wrap,
+      .food-section {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <div>
+        <div class="trip-facts">
+          <span class="fact">2026/5/27-5/31</span>
+          <span class="fact">大阪・京都・天橋立・奈良・宇治</span>
+          <span class="fact">親子與長輩同行</span>
+        </div>
+        <h1>大阪五日行程</h1>
+        <p>依照 Markdown 行程整理成可切換的網頁版：每天有完整時間軸、餐食推薦與 Google Maps 連結，Day 1 可切換晴天與雨天備案，並可展開查看行程圖。</p>
+      </div>
+    </section>
+
+    <nav class="top-nav" aria-label="每日行程分頁">
+      <button class="day-tab active" data-day="day1">Day 1<br>大阪市區</button>
+      <button class="day-tab" data-day="day2">Day 2<br>京都包車</button>
+      <button class="day-tab" data-day="day3">Day 3<br>天橋立伊根</button>
+      <button class="day-tab" data-day="day4">Day 4<br>奈良宇治</button>
+      <button class="day-tab" data-day="day5">Day 5<br>返程機場</button>
+    </nav>
+
+    <section id="day1" class="day-panel active">
+      <div class="day-header">
+        <div class="summary">
+          <h2>Day 1｜5/27（三）大阪市區</h2>
+          <p>凌晨班機抵達，同行有 4 歲、2 歲小孩與 65 歲長輩，重點是早吃、早回飯店、保留撤退彈性。晚上 19:00 道頓堀水上觀光船維持原計畫。</p>
+          <div class="mode-tabs" aria-label="Day 1 天氣方案">
+            <button class="mode-tab active" data-mode="sunny">晴天方案</button>
+            <button class="mode-tab" data-mode="rainy">雨天備案</button>
+          </div>
+        </div>
+        <div class="quick-grid">
+          <div class="quick-card"><h3>住宿</h3><p>Ostay Vermillion Namba</p></div>
+          <div class="quick-card"><h3>必留體力</h3><p>15:00 後回飯店休息補眠</p></div>
+          <div class="quick-card"><h3>晚餐策略</h3><p>道頓堀今井、551 外帶或百貨美食樓層</p></div>
+        </div>
+      </div>
+
+      <div class="route-map">
+        <button class="map-toggle" data-map="map-day1"><span>展開 Day 1 行程圖</span><span>＋</span></button>
+        <div id="map-day1" class="map-panel"><img src="1.png" alt="Day 1 大阪市區行程圖"></div>
+      </div>
+
+      <div class="itinerary-mode active" data-mode-panel="sunny">
+        <article class="timeline-wrap">
+          <h3>晴天詳細時間軸</h3>
+          <div class="timeline">
+            <div class="stop"><div class="time">06:05</div><div class="stop-card"><h4>抵達關西機場</h4><p>入境、領行李、領或換南海電鐵票券。</p><div class="tags"><span class="tag">機場</span><span class="tag">保留排隊時間</span></div></div></div>
+            <div class="stop"><div class="time">07:20-08:40</div><div class="stop-card"><h4>南海電鐵到新今宮，飯店寄放行李</h4><p>雨具與大件行李先放掉，帶小孩可考慮短程計程車。</p></div></div>
+            <div class="stop meal"><div class="time">08:45-09:25</div><div class="stop-card"><h4>早餐</h4><p>新今宮或天王寺附近吃簡單熱食；松屋、Sukiya、なか卯或便利商店最穩。</p><div class="tags"><span class="tag">早餐</span><span class="tag">快速補體力</span></div></div></div>
+            <div class="stop"><div class="time">09:30-11:30</div><div class="stop-card"><h4>天王寺動物園</h4><p>平日通常 09:30 開園，第一天不要逛滿，孩子累就提早撤。</p></div></div>
+            <div class="stop meal"><div class="time">11:30-12:30</div><div class="stop-card"><h4>午餐：新世界／天王寺</h4><p>可選 <a href="https://www.google.com/maps/search/?api=1&query=%E4%B8%B2%E3%81%8B%E3%81%A4%E3%81%A0%E3%82%8B%E3%81%BE%20%E6%96%B0%E4%B8%96%E7%95%8C%E7%B7%8F%E6%9C%AC%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E6%B5%AA%E9%80%9F%E5%8C%BA%E6%81%B5%E7%BE%8E%E9%A0%88%E6%9D%B12-3-9" target="_blank" rel="noopener">串かつだるま 新世界総本店</a>、<a href="https://www.google.com/maps/search/?api=1&query=%E4%B8%B2%E3%81%8B%E3%81%A4%E3%81%A0%E3%82%8B%E3%81%BE%20%E3%82%B8%E3%83%A3%E3%83%B3%E3%82%B8%E3%83%A3%E3%83%B3%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E6%B5%AA%E9%80%9F%E5%8C%BA%E6%81%B5%E7%BE%8E%E9%A0%88%E6%9D%B13-4-4" target="_blank" rel="noopener">ジャンジャン店</a>，或 <a href="https://www.google.com/maps/search/?api=1&query=%E3%81%82%E3%81%B9%E3%81%AE%E3%83%8F%E3%83%AB%E3%82%AB%E3%82%B9%20%E8%BF%91%E9%89%84%E6%9C%AC%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E9%98%BF%E5%80%8D%E9%87%8E%E5%8C%BA%E9%98%BF%E5%80%8D%E9%87%8E%E7%AD%8B1-1-43" target="_blank" rel="noopener">あべのハルカス 近鉄本店</a> 美食樓層。</p><div class="tags"><span class="tag">午餐</span><span class="tag">串炸</span><span class="tag">百貨美食</span></div></div></div>
+            <div class="stop"><div class="time">12:30-14:15</div><div class="stop-card"><h4>大阪城御座船</h4><p>從天王寺移動到大阪城，先到售票口兌換，航程約 20 分。</p></div></div>
+            <div class="stop"><div class="time">14:15-15:15</div><div class="stop-card"><h4>大阪城公園、JO-TERRACE</h4><p>補章魚燒、飲料或冰品，視體力縮短。</p><div class="tags"><span class="tag">小吃</span><span class="tag">休息</span></div></div></div>
+            <div class="stop rest"><div class="time">15:15-17:25</div><div class="stop-card"><h4>回飯店 check-in／休息補眠</h4><p>這段是第一天最重要的緩衝，讓小孩與長輩恢復體力。</p></div></div>
+            <div class="stop meal"><div class="time">17:30-18:20</div><div class="stop-card"><h4>早晚餐：難波／道頓堀</h4><p>推薦 <a href="https://www.google.com/maps/search/?api=1&query=%E9%81%93%E9%A0%93%E5%A0%80%E4%BB%8A%E4%BA%95%20%E6%9C%AC%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E9%81%93%E9%A0%93%E5%A0%801-7-22" target="_blank" rel="noopener">道頓堀今井 本店</a> 或 <a href="https://www.google.com/maps/search/?api=1&query=551%E8%93%AC%E8%8E%B1%20%E6%88%8E%E6%A9%8B%E6%9C%AC%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E9%9B%A3%E6%B3%A23-6-3" target="_blank" rel="noopener">551蓬莱 戎橋本店</a> 外帶，不排燒肉。</p><div class="tags"><span class="tag">晚餐</span><span class="tag">早吃</span></div></div></div>
+            <div class="stop"><div class="time">19:00-19:30</div><div class="stop-card"><h4>道頓堀水上觀光船</h4><p>提早 15-20 分抵達集合點，結束後直接回飯店。</p></div></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="itinerary-mode" data-mode-panel="rainy" hidden>
+        <article class="timeline-wrap">
+          <h3>雨天備案詳細時間軸</h3>
+          <div class="timeline">
+            <div class="stop"><div class="time">06:05</div><div class="stop-card"><h4>抵達關西機場</h4><p>入境、領行李、領或換南海電鐵票券。</p></div></div>
+            <div class="stop"><div class="time">07:20-08:40</div><div class="stop-card"><h4>南海電鐵到新今宮，飯店寄放行李</h4><p>雨大時直接短程計程車，先把行李與雨具壓力卸掉。</p></div></div>
+            <div class="stop meal"><div class="time">08:45-09:20</div><div class="stop-card"><h4>早餐</h4><p>飯店附近或新今宮簡單吃，便利商店、松屋、Sukiya、なか卯都可。</p><div class="tags"><span class="tag">早餐</span><span class="tag">快速熱食</span></div></div></div>
+            <div class="stop"><div class="time">09:20-10:10</div><div class="stop-card"><h4>前往海遊館</h4><p>新今宮或難波轉 Osaka Metro 到大阪港站，雨天抓 45-60 分較穩。</p></div></div>
+            <div class="stop"><div class="time">10:10-12:20</div><div class="stop-card"><h4><a href="https://www.google.com/maps/search/?api=1&query=%E6%B5%B7%E9%81%8A%E9%A4%A8%20%E5%A4%A7%E9%98%AA%E5%B8%82%E6%B8%AF%E5%8C%BA%E6%B5%B7%E5%B2%B8%E9%80%9A1-1-10" target="_blank" rel="noopener">海遊館</a></h4><p>室內行程適合雨天與親子，建議先線上看時段票。</p></div></div>
+            <div class="stop meal"><div class="time">12:20-13:20</div><div class="stop-card"><h4>午餐：天保山 Marketplace</h4><p>室內美食可選 <a href="https://www.google.com/maps/search/?api=1&query=%E3%81%AA%E3%81%AB%E3%82%8F%E9%A3%9F%E3%81%84%E3%81%97%E3%82%93%E3%81%BC%E6%A8%AA%E4%B8%81%20%E5%A4%A9%E4%BF%9D%E5%B1%B1%E3%83%9E%E3%83%BC%E3%82%B1%E3%83%83%E3%83%88%E3%83%97%E3%83%AC%E3%83%BC%E3%82%B9" target="_blank" rel="noopener">なにわ食いしんぼ横丁</a>、<a href="https://www.google.com/maps/search/?api=1&query=%E3%81%8C%E3%82%93%E3%81%93%20%E5%A4%A9%E4%BF%9D%E5%B1%B1%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E6%B8%AF%E5%8C%BA%E6%B5%B7%E5%B2%B8%E9%80%9A1-1-10" target="_blank" rel="noopener">がんこ 天保山店</a>、<a href="https://www.google.com/maps/search/?api=1&query=%E5%8C%97%E6%A5%B5%E6%98%9F%20%E5%A4%A9%E4%BF%9D%E5%B1%B1%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E6%B8%AF%E5%8C%BA%E6%B5%B7%E5%B2%B8%E9%80%9A1-1-10" target="_blank" rel="noopener">北極星 天保山店</a> 或 <a href="https://www.google.com/maps/search/?api=1&query=%E9%B6%B4%E6%A9%8B%E9%A2%A8%E6%9C%88%20%E5%A4%A9%E4%BF%9D%E5%B1%B1%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E6%B8%AF%E5%8C%BA%E6%B5%B7%E5%B2%B8%E9%80%9A1-1-10" target="_blank" rel="noopener">鶴橋風月 天保山店</a>。</p><div class="tags"><span class="tag">午餐</span><span class="tag">室內</span><span class="tag">親子友善</span></div></div></div>
+            <div class="stop"><div class="time">13:20-14:10</div><div class="stop-card"><h4><a href="https://www.google.com/maps/search/?api=1&query=%E5%A4%A9%E4%BF%9D%E5%B1%B1%E3%83%9E%E3%83%BC%E3%82%B1%E3%83%83%E3%83%88%E3%83%97%E3%83%AC%E3%83%BC%E3%82%B9%20%E5%A4%A7%E9%98%AA%E5%B8%82%E6%B8%AF%E5%8C%BA%E6%B5%B7%E5%B2%B8%E9%80%9A1-1-10" target="_blank" rel="noopener">天保山マーケットプレース</a></h4><p>買海遊館小物、角色商品與零食，累了就縮短。</p><div class="tags"><span class="tag">伴手禮</span><span class="tag">室內逛街</span></div></div></div>
+            <div class="stop rest"><div class="time">14:10-17:20</div><div class="stop-card"><h4>回飯店 check-in／休息補眠</h4><p>雨備核心，讓小孩與長輩恢復體力。</p></div></div>
+            <div class="stop meal"><div class="time">17:30-18:20</div><div class="stop-card"><h4>早晚餐：道頓堀／難波</h4><p>推薦 <a href="https://www.google.com/maps/search/?api=1&query=%E9%81%93%E9%A0%93%E5%A0%80%E4%BB%8A%E4%BA%95%20%E6%9C%AC%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E9%81%93%E9%A0%93%E5%A0%801-7-22" target="_blank" rel="noopener">道頓堀今井 本店</a>、<a href="https://www.google.com/maps/search/?api=1&query=551%E8%93%AC%E8%8E%B1%20%E6%88%8E%E6%A9%8B%E6%9C%AC%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E9%9B%A3%E6%B3%A23-6-3" target="_blank" rel="noopener">551蓬莱 戎橋本店</a> 外帶，或百貨美食樓層。</p><div class="tags"><span class="tag">晚餐</span><span class="tag">雨天簡化</span></div></div></div>
+            <div class="stop"><div class="time">19:00-19:30</div><div class="stop-card"><h4>道頓堀水上觀光船</h4><p>若僅小雨通常仍可能運行，實際依現場與營運公告為準。</p></div></div>
+          </div>
+        </article>
+      </div>
+
+      <section class="food-section">
+        <h3>Day 1 餐食與小吃快選</h3>
+        <div class="food-grid">
+          <div class="food-box"><h4>早餐</h4><ul><li>松屋、Sukiya、なか卯：牛丼、鮭魚定食、親子丼</li><li>便利商店：飯糰、三明治、優格、咖啡</li><li>天王寺站周邊咖啡：吐司、蛋類早餐</li></ul></div>
+          <div class="food-box"><h4>午餐</h4><ul><li><a href="https://www.google.com/maps/search/?api=1&query=%E4%B8%B2%E3%81%8B%E3%81%A4%E3%81%A0%E3%82%8B%E3%81%BE%20%E6%96%B0%E4%B8%96%E7%95%8C%E7%B7%8F%E6%9C%AC%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E6%B5%AA%E9%80%9F%E5%8C%BA%E6%81%B5%E7%BE%8E%E9%A0%88%E6%9D%B12-3-9" target="_blank" rel="noopener">串かつだるま 新世界総本店</a></li><li><a href="https://www.google.com/maps/search/?api=1&query=%E3%81%82%E3%81%B9%E3%81%AE%E3%83%8F%E3%83%AB%E3%82%AB%E3%82%B9%20%E8%BF%91%E9%89%84%E6%9C%AC%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E9%98%BF%E5%80%8D%E9%87%8E%E5%8C%BA%E9%98%BF%E5%80%8D%E9%87%8E%E7%AD%8B1-1-43" target="_blank" rel="noopener">あべのハルカス 近鉄本店</a></li><li>雨天：<a href="https://www.google.com/maps/search/?api=1&query=%E5%A4%A9%E4%BF%9D%E5%B1%B1%E3%83%9E%E3%83%BC%E3%82%B1%E3%83%83%E3%83%88%E3%83%97%E3%83%AC%E3%83%BC%E3%82%B9%20%E5%A4%A7%E9%98%AA%E5%B8%82%E6%B8%AF%E5%8C%BA%E6%B5%B7%E5%B2%B8%E9%80%9A1-1-10" target="_blank" rel="noopener">天保山 Marketplace</a></li></ul></div>
+          <div class="food-box"><h4>晚餐與小吃</h4><ul><li><a href="https://www.google.com/maps/search/?api=1&query=%E9%81%93%E9%A0%93%E5%A0%80%E4%BB%8A%E4%BA%95%20%E6%9C%AC%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E9%81%93%E9%A0%93%E5%A0%801-7-22" target="_blank" rel="noopener">道頓堀今井 本店</a></li><li><a href="https://www.google.com/maps/search/?api=1&query=551%E8%93%AC%E8%8E%B1%20%E6%88%8E%E6%A9%8B%E6%9C%AC%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E9%9B%A3%E6%B3%A23-6-3" target="_blank" rel="noopener">551蓬莱 戎橋本店</a></li><li><a href="https://www.google.com/maps/search/?api=1&query=%E9%87%91%E9%BE%8D%E3%83%A9%E3%83%BC%E3%83%A1%E3%83%B3%20%E9%81%93%E9%A0%93%E5%A0%80%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E9%81%93%E9%A0%93%E5%A0%801-7-26" target="_blank" rel="noopener">金龍ラーメン 道頓堀店</a></li></ul></div>
+        </div>
+      </section>
+    </section>
+
+    <section id="day2" class="day-panel">
+      <div class="day-header">
+        <div class="summary"><h2>Day 2｜5/28（四）京都包車</h2><p>08:00-16:00 包車，午餐最適合落在 11:45-12:30 的祇園／花見小路附近。晚上回大阪休息後安排燒肉，是本趟燒烤日。</p></div>
+        <div class="quick-grid"><div class="quick-card"><h3>路線</h3><p>清水寺、二年坂、祇園、金閣寺、嵐山</p></div><div class="quick-card"><h3>午餐點</h3><p>祇園附近最順路</p></div><div class="quick-card"><h3>晚餐</h3><p>難波／道頓堀燒肉，建議預約</p></div></div>
+      </div>
+      <div class="route-map"><button class="map-toggle" data-map="map-day2"><span>展開 Day 2 行程圖</span><span>＋</span></button><div id="map-day2" class="map-panel"><img src="2.png" alt="Day 2 京都包車行程圖"></div></div>
+      <article class="timeline-wrap">
+        <h3>詳細時間軸</h3>
+        <div class="timeline">
+          <div class="stop meal"><div class="time">07:15-07:45</div><div class="stop-card"><h4>早餐</h4><p>飯店附近簡單吃，或便利商店飯糰、三明治、牛奶、咖啡帶上車。</p><div class="tags"><span class="tag">早餐</span><span class="tag">準時上車</span></div></div></div>
+          <div class="stop"><div class="time">08:00</div><div class="stop-card"><h4>包車從住宿出發</h4><p>目標 09:15 左右抵達清水寺周邊。</p></div></div>
+          <div class="stop"><div class="time">09:15-11:00</div><div class="stop-card"><h4>清水寺、三年坂、二年坂</h4><p>附近可吃藤菜美糰子、清水京あみ八ツ橋泡芙。</p><div class="tags"><span class="tag"><a href="https://www.google.com/maps/search/?api=1&query=%E8%97%A4%E8%8F%9C%E7%BE%8E%20%E4%B8%89%E5%B9%B4%E5%9D%82%E6%9C%AC%E5%BA%97%20%E4%BA%AC%E9%83%BD%E5%B8%82%E6%9D%B1%E5%B1%B1%E5%8C%BA%E6%B8%85%E6%B0%B43%E4%B8%81%E7%9B%AE338-39" target="_blank" rel="noopener">藤菜美</a></span><span class="tag"><a href="https://www.google.com/maps/search/?api=1&query=%E6%B8%85%E6%B0%B4%E4%BA%AC%E3%81%82%E3%81%BF%20%E4%BA%AC%E9%83%BD%E5%B8%82%E6%9D%B1%E5%B1%B1%E5%8C%BA%E6%B8%85%E6%B0%B41%E4%B8%81%E7%9B%AE262" target="_blank" rel="noopener">清水京あみ</a></span></div></div></div>
+          <div class="stop"><div class="time">11:10-11:40</div><div class="stop-card"><h4>祇園花見小路</h4><p>以散步拍照為主，尊重私人巷弄與店家規範。</p></div></div>
+          <div class="stop meal"><div class="time">11:45-12:30</div><div class="stop-card"><h4>午餐：祇園附近</h4><p>建議 <a href="https://www.google.com/maps/search/?api=1&query=%E7%A5%87%E5%9C%92%E3%81%9F%E3%82%93%E3%81%A8%20%E4%BA%AC%E9%83%BD%E5%B8%82%E6%9D%B1%E5%B1%B1%E5%8C%BA%E6%B8%85%E6%9C%AC%E7%94%BA372" target="_blank" rel="noopener">祇園たんと</a>、<a href="https://www.google.com/maps/search/?api=1&query=%E3%81%B2%E3%81%95%E3%81%94%20%E4%BA%AC%E9%83%BD%E5%B8%82%E6%9D%B1%E5%B1%B1%E5%8C%BA%E4%B8%8B%E6%B2%B3%E5%8E%9F%E7%94%BA484" target="_blank" rel="noopener">ひさご</a> 或 <a href="https://www.google.com/maps/search/?api=1&query=%E7%A5%87%E5%9C%92%E3%81%8D%E3%82%89%E3%82%89%20%E4%BA%AC%E9%83%BD%E5%B8%82%E6%9D%B1%E5%B1%B1%E5%8C%BA%E7%A5%87%E5%9C%92%E7%94%BA%E5%8D%97%E5%81%B4570-232" target="_blank" rel="noopener">祇園きらら</a>。</p><div class="tags"><span class="tag">午餐</span><span class="tag">包車最佳點</span></div></div></div>
+          <div class="stop"><div class="time">12:30-13:50</div><div class="stop-card"><h4>移動到金閣寺並參拜</h4><p>京都市區道路易塞，請司機視況調整。</p></div></div>
+          <div class="stop"><div class="time">13:50-14:55</div><div class="stop-card"><h4>嵐山商店街</h4><p>買小吃、伴手禮，行程緊就不走竹林。可選 <a href="https://www.google.com/maps/search/?api=1&query=%E5%B5%90%E5%B1%B1%E3%82%88%E3%81%97%E3%82%80%E3%82%89%20%E4%BA%AC%E9%83%BD%E5%B8%82%E5%8F%B3%E4%BA%AC%E5%8C%BA%E5%B5%AF%E5%B3%A8%E5%A4%A9%E9%BE%8D%E5%AF%BA%E8%8A%92%E3%83%8E%E9%A6%AC%E5%A0%B4%E7%94%BA3" target="_blank" rel="noopener">嵐山よしむら</a>、<a href="https://www.google.com/maps/search/?api=1&query=%25%20Arabica%20Kyoto%20Arashiyama%20%E4%BA%AC%E9%83%BD%E5%B8%82%E5%8F%B3%E4%BA%AC%E5%8C%BA%E5%B5%AF%E5%B3%A8%E5%A4%A9%E9%BE%8D%E5%AF%BA%E8%8A%92%E3%83%8E%E9%A6%AC%E5%A0%B4%E7%94%BA3-47" target="_blank" rel="noopener">% Arabica</a>、<a href="https://www.google.com/maps/search/?api=1&query=%E3%82%88%E3%83%BC%E3%81%98%E3%82%84%E3%82%AB%E3%83%95%E3%82%A7%20%E5%B5%AF%E5%B3%A8%E9%87%8E%E5%B5%90%E5%B1%B1%E5%BA%97%20%E4%BA%AC%E9%83%BD%E5%B8%82%E5%8F%B3%E4%BA%AC%E5%8C%BA%E5%B5%AF%E5%B3%A8%E5%A4%A9%E9%BE%8D%E5%AF%BA%E7%AB%8B%E7%9F%B3%E7%94%BA2" target="_blank" rel="noopener">よーじやカフェ</a>。</p></div></div>
+          <div class="stop rest"><div class="time">14:55-17:30</div><div class="stop-card"><h4>回大阪住宿，飯店休息</h4><p>小孩補眠、長輩休息，晚餐才有體力。</p></div></div>
+          <div class="stop meal"><div class="time">18:00-19:30</div><div class="stop-card"><h4>晚餐：燒肉／燒烤</h4><p>推薦 <a href="https://www.google.com/maps/search/?api=1&query=%E6%9D%BE%E9%98%AA%E7%89%9B%E7%84%BC%E8%82%89M%20%E6%B3%95%E5%96%84%E5%AF%BA%E6%A8%AA%E4%B8%81%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E9%9B%A3%E6%B3%A21-1-19" target="_blank" rel="noopener">松阪牛焼肉M 法善寺横丁店</a>、<a href="https://www.google.com/maps/search/?api=1&query=%E7%84%BC%E8%82%89%E5%8A%9B%E4%B8%B8%20%E3%81%AA%E3%82%93%E3%81%B0%E9%81%93%E9%A0%93%E5%A0%80%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E9%81%93%E9%A0%93%E5%A0%801-9-1" target="_blank" rel="noopener">焼肉力丸 なんば道頓堀店</a> 或 <a href="https://www.google.com/maps/search/?api=1&query=%E7%84%BC%E8%82%89%E5%B1%8B%20%E5%A4%A7%E7%89%A7%E5%A0%B4%20%E9%81%93%E9%A0%93%E5%A0%80%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E9%81%93%E9%A0%93%E5%A0%802-2-20" target="_blank" rel="noopener">焼肉屋 大牧場 道頓堀店</a>。</p><div class="tags"><span class="tag">晚餐</span><span class="tag">燒烤日</span></div></div></div>
+        </div>
+      </article>
+    </section>
+
+    <section id="day3" class="day-panel">
+      <div class="day-header">
+        <div class="summary"><h2>Day 3｜5/29（五）天橋立、伊根跟團</h2><p>07:15 大阪蟹道樂東店集合，午餐自理最適合排在 11:30-12:20 的天橋立 View Land／智恩寺附近，不要走太遠。</p></div>
+        <div class="quick-grid"><div class="quick-card"><h3>集合</h3><p>07:15 大阪蟹道樂東店</p></div><div class="quick-card"><h3>午餐點</h3><p>View Land 或智恩寺周邊</p></div><div class="quick-card"><h3>解散</h3><p>18:30 道頓堀附近晚餐</p></div></div>
+      </div>
+      <div class="route-map"><button class="map-toggle" data-map="map-day3"><span>展開 Day 3 行程圖</span><span>＋</span></button><div id="map-day3" class="map-panel"><img src="3.png" alt="Day 3 天橋立伊根行程圖"></div></div>
+      <article class="timeline-wrap">
+        <h3>詳細時間軸</h3>
+        <div class="timeline">
+          <div class="stop meal"><div class="time">06:15-06:45</div><div class="stop-card"><h4>早餐</h4><p>飯店附近便利商店，或帶飯糰到集合點前吃。</p><div class="tags"><span class="tag">早餐</span><span class="tag">別遲到</span></div></div></div>
+          <div class="stop"><div class="time">06:45-07:30</div><div class="stop-card"><h4>前往集合點並出發</h4><p>07:15 集合，07:30 巴士前往天橋立。</p></div></div>
+          <div class="stop"><div class="time">10:20-11:20</div><div class="stop-card"><h4>天橋立 View Land</h4><p>搭吊椅或單軌電車上展望台。</p></div></div>
+          <div class="stop meal"><div class="time">11:30-12:20</div><div class="stop-card"><h4>午餐：天橋立周邊</h4><p>最穩是 <a href="https://www.google.com/maps/search/?api=1&query=%E5%A4%A9%E6%A9%8B%E7%AB%8B%E3%83%93%E3%83%A5%E3%83%BC%E3%83%A9%E3%83%B3%E3%83%89%20%E5%B1%95%E6%9C%9B%E3%83%AC%E3%82%B9%E3%83%88%E3%83%A9%E3%83%B3%20%E4%BA%AC%E9%83%BD%E5%BA%9C%E5%AE%AE%E6%B4%A5%E5%B8%82%E6%96%87%E7%8F%A0" target="_blank" rel="noopener">天橋立ビューランド 展望レストラン</a>；也可選 <a href="https://www.google.com/maps/search/?api=1&query=%E6%A9%8B%E7%AB%8B%E8%8C%B6%E5%B1%8B%20%E4%BA%AC%E9%83%BD%E5%BA%9C%E5%AE%AE%E6%B4%A5%E5%B8%82%E6%96%87%E7%8F%A0%E5%A4%A9%E6%A9%8B%E7%AB%8B%E5%85%AC%E5%9C%92%E5%86%85" target="_blank" rel="noopener">橋立茶屋</a>。</p><div class="tags"><span class="tag">午餐</span><span class="tag">團體日最穩</span></div></div></div>
+          <div class="stop"><div class="time">12:20-13:10</div><div class="stop-card"><h4>智恩寺、天橋立商店街</h4><p>可買 <a href="https://www.google.com/maps/search/?api=1&query=%E6%99%BA%E6%81%A9%E5%AF%BA%20%E5%9B%9B%E8%BB%92%E8%8C%B6%E5%B1%8B%20%E5%90%89%E9%87%8E%E8%8C%B6%E5%B1%8B%20%E4%BA%AC%E9%83%BD%E5%BA%9C%E5%AE%AE%E6%B4%A5%E5%B8%82%E6%96%87%E7%8F%A0" target="_blank" rel="noopener">智恩寺四軒茶屋・吉野茶屋</a> 的智慧餅。</p></div></div>
+          <div class="stop"><div class="time">13:30-15:00</div><div class="stop-card"><h4>伊根灣遊覽船、伊根舟屋散策</h4><p>若導遊時間允許，可看 <a href="https://www.google.com/maps/search/?api=1&query=%E8%88%9F%E5%B1%8B%E9%A3%9F%E5%A0%82%20%E4%BA%AC%E9%83%BD%E5%BA%9C%E4%B8%8E%E8%AC%9D%E9%83%A1%E4%BC%8A%E6%A0%B9%E7%94%BA%E5%B9%B3%E7%94%B0491%202F" target="_blank" rel="noopener">舟屋食堂</a> 或 <a href="https://www.google.com/maps/search/?api=1&query=INE%20CAFE%20%E4%BA%AC%E9%83%BD%E5%BA%9C%E4%B8%8E%E8%AC%9D%E9%83%A1%E4%BC%8A%E6%A0%B9%E7%94%BA%E5%B9%B3%E7%94%B0593-1" target="_blank" rel="noopener">INE CAFE</a>。</p></div></div>
+          <div class="stop rest"><div class="time">15:00-18:30</div><div class="stop-card"><h4>回程至大阪解散</h4><p>車上休息，18:30 大阪蟹道樂東店解散。</p></div></div>
+          <div class="stop meal"><div class="time">18:45-20:00</div><div class="stop-card"><h4>晚餐：道頓堀／難波</h4><p>推薦 <a href="https://www.google.com/maps/search/?api=1&query=%E9%81%93%E9%A0%93%E5%A0%80%E4%BB%8A%E4%BA%95%20%E6%9C%AC%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E9%81%93%E9%A0%93%E5%A0%801-7-22" target="_blank" rel="noopener">道頓堀今井 本店</a>、<a href="https://www.google.com/maps/search/?api=1&query=%E3%81%8A%E5%A5%BD%E3%81%BF%E7%84%BC%20%E7%BE%8E%E6%B4%A5%E3%81%AE%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E9%81%93%E9%A0%93%E5%A0%801-4-15" target="_blank" rel="noopener">お好み焼 美津の</a> 或 <a href="https://www.google.com/maps/search/?api=1&query=551%E8%93%AC%E8%8E%B1%20%E6%88%8E%E6%A9%8B%E6%9C%AC%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E9%9B%A3%E6%B3%A23-6-3" target="_blank" rel="noopener">551蓬莱 戎橋本店</a>。</p><div class="tags"><span class="tag">晚餐</span><span class="tag">熱湯麵或大阪燒</span></div></div></div>
+        </div>
+      </article>
+    </section>
+
+    <section id="day4" class="day-panel">
+      <div class="day-header">
+        <div class="summary"><h2>Day 4｜5/30（六）奈良、宇治、唐吉訶德</h2><p>奈良放上午、宇治放下午，晚上回難波吃飯後接唐吉訶德採買。5 月幼鹿季，餵鹿與拍照要保守一點。</p></div>
+        <div class="quick-grid"><div class="quick-card"><h3>上午</h3><p>奈良公園、東大寺周邊</p></div><div class="quick-card"><h3>下午</h3><p>宇治平等院與抹茶甜點</p></div><div class="quick-card"><h3>晚上</h3><p>難波晚餐與唐吉訶德</p></div></div>
+      </div>
+      <div class="route-map"><button class="map-toggle" data-map="map-day4"><span>展開 Day 4 行程圖</span><span>＋</span></button><div id="map-day4" class="map-panel"><img src="4.png" alt="Day 4 奈良宇治行程圖"></div></div>
+      <article class="timeline-wrap">
+        <h3>詳細時間軸</h3>
+        <div class="timeline">
+          <div class="stop meal"><div class="time">07:45-08:20</div><div class="stop-card"><h4>早餐</h4><p>住宿附近簡單吃，或前一晚先買好麵包、水果與飲料。</p><div class="tags"><span class="tag">早餐</span></div></div></div>
+          <div class="stop"><div class="time">08:20-09:35</div><div class="stop-card"><h4>前往近鐵奈良</h4><p>大國町或難波轉近鐵奈良，抓 60-75 分較穩。</p></div></div>
+          <div class="stop"><div class="time">10:00-10:20</div><div class="stop-card"><h4><a href="https://www.google.com/maps/search/?api=1&query=%E4%B8%AD%E8%B0%B7%E5%A0%82%20%E5%A5%88%E8%89%AF%E7%9C%8C%E5%A5%88%E8%89%AF%E5%B8%82%E6%A9%8B%E6%9C%AC%E7%94%BA29" target="_blank" rel="noopener">中谷堂</a> よもぎ餅</h4><p>看現場是否有高速搗麻糬，順路買小點心。</p></div></div>
+          <div class="stop"><div class="time">10:30-11:50</div><div class="stop-card"><h4>奈良公園、東大寺周邊</h4><p>只餵鹿仙貝，不要靠近母鹿與幼鹿。</p></div></div>
+          <div class="stop meal"><div class="time">12:00-13:00</div><div class="stop-card"><h4>午餐：奈良公園／近鐵奈良</h4><p>推薦 <a href="https://www.google.com/maps/search/?api=1&query=%E9%87%9C%E3%82%81%E3%81%97%E5%BF%97%E6%B4%A5%E9%A6%99%20%E5%85%AC%E5%9C%92%E5%BA%97%20%E5%A5%88%E8%89%AF%E5%B8%82%E7%99%BB%E5%A4%A7%E8%B7%AF%E7%94%BA59-11" target="_blank" rel="noopener">釜めし志津香 公園店</a>、<a href="https://www.google.com/maps/search/?api=1&query=%E6%9F%BF%E3%81%AE%E8%91%89%E3%81%9A%E3%81%97%20%E5%B9%B3%E5%AE%97%20%E5%A5%88%E8%89%AF%E5%BA%97%20%E5%A5%88%E8%89%AF%E5%B8%82%E4%BB%8A%E5%BE%A1%E9%96%80%E7%94%BA30-1" target="_blank" rel="noopener">柿の葉ずし 平宗 奈良店</a> 或 <a href="https://www.google.com/maps/search/?api=1&query=%E6%9F%BF%E3%81%AE%E8%91%89%E3%81%99%E3%81%97%E6%9C%AC%E8%88%97%E3%81%9F%E3%81%AA%E3%81%8B%20%E3%81%AA%E3%82%89%E6%9C%AC%E5%BA%97%20%E5%A5%88%E8%89%AF%E5%B8%82%E6%9D%B1%E5%90%91%E4%B8%AD%E7%94%BA5-2" target="_blank" rel="noopener">柿の葉すし本舗たなか なら本店</a>。</p><div class="tags"><span class="tag">午餐</span><span class="tag">奈良名物</span></div></div></div>
+          <div class="stop"><div class="time">13:00-14:50</div><div class="stop-card"><h4>興福寺／猿澤池／移動到宇治</h4><p>視體力加減，JR 奈良到 JR 宇治約 35-50 分。</p></div></div>
+          <div class="stop"><div class="time">15:00-16:10</div><div class="stop-card"><h4>平等院、宇治川</h4><p>庭園、博物館與表參道視排隊調整。</p></div></div>
+          <div class="stop meal"><div class="time">16:10-17:20</div><div class="stop-card"><h4>宇治抹茶甜點</h4><p>推薦 <a href="https://www.google.com/maps/search/?api=1&query=%E4%B8%AD%E6%9D%91%E8%97%A4%E5%90%89%E6%9C%AC%E5%BA%97%20%E5%B9%B3%E7%AD%89%E9%99%A2%E5%BA%97%20%E4%BA%AC%E9%83%BD%E5%BA%9C%E5%AE%87%E6%B2%BB%E5%B8%82%E5%AE%87%E6%B2%BB%E8%93%AE%E8%8F%AF5-1" target="_blank" rel="noopener">中村藤吉本店 平等院店</a>、<a href="https://www.google.com/maps/search/?api=1&query=%E4%BC%8A%E8%97%A4%E4%B9%85%E5%8F%B3%E8%A1%9B%E9%96%80%20JR%E5%AE%87%E6%B2%BB%E9%A7%85%E5%89%8D%E5%BA%97%E8%8C%B6%E6%88%BF%20%E4%BA%AC%E9%83%BD%E5%BA%9C%E5%AE%87%E6%B2%BB%E5%B8%82%E5%AE%87%E6%B2%BB%E5%AE%87%E6%96%87%E5%AD%9716-1" target="_blank" rel="noopener">伊藤久右衛門 JR宇治駅前店茶房</a> 或 <a href="https://www.google.com/maps/search/?api=1&query=%E9%80%9A%E5%9C%93%20%E5%AE%87%E6%B2%BB%E6%9C%AC%E5%BA%97%20%E4%BA%AC%E9%83%BD%E5%BA%9C%E5%AE%87%E6%B2%BB%E5%B8%82%E5%AE%87%E6%B2%BB%E6%9D%B1%E5%86%851" target="_blank" rel="noopener">通圓 宇治本店</a>。</p><div class="tags"><span class="tag">下午茶</span><span class="tag">抹茶</span></div></div></div>
+          <div class="stop"><div class="time">17:20-18:40</div><div class="stop-card"><h4>回大阪難波</h4><p>依選擇 JR、京阪或近鐵轉乘。</p></div></div>
+          <div class="stop meal"><div class="time">18:45-20:00</div><div class="stop-card"><h4>晚餐：道頓堀／難波</h4><p>推薦 <a href="https://www.google.com/maps/search/?api=1&query=%E5%8D%83%E6%88%BF%20%E9%81%93%E9%A0%93%E5%A0%80%E3%83%93%E3%83%AB%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E9%81%93%E9%A0%93%E5%A0%801-5-5" target="_blank" rel="noopener">千房 道頓堀ビル店</a>、<a href="https://www.google.com/maps/search/?api=1&query=%E4%B8%80%E8%98%AD%20%E9%81%93%E9%A0%93%E5%A0%80%E5%BA%97%E6%9C%AC%E9%A4%A8%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E5%AE%97%E5%8F%B3%E8%A1%9B%E9%96%80%E7%94%BA7-18" target="_blank" rel="noopener">一蘭 道頓堀店本館</a> 或 <a href="https://www.google.com/maps/search/?api=1&query=%E9%B3%A5%E8%B2%B4%E6%97%8F%20%E9%81%93%E9%A0%93%E5%A0%80%E4%B8%AD%E5%BA%A7%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E9%81%93%E9%A0%93%E5%A0%801-7-21" target="_blank" rel="noopener">鳥貴族 道頓堀中座店</a>。</p><div class="tags"><span class="tag">晚餐</span><span class="tag">接採買</span></div></div></div>
+          <div class="stop"><div class="time">20:00-22:00</div><div class="stop-card"><h4>唐吉訶德買伴手禮</h4><p>可選 <a href="https://www.google.com/maps/search/?api=1&query=%E3%83%89%E3%83%B3%E3%83%BB%E3%82%AD%E3%83%9B%E3%83%BC%E3%83%86%20%E9%81%93%E9%A0%93%E5%A0%80%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E5%AE%97%E5%8F%B3%E8%A1%9B%E9%96%80%E7%94%BA7-13" target="_blank" rel="noopener">ドン・キホーテ 道頓堀店</a> 或 <a href="https://www.google.com/maps/search/?api=1&query=%E3%83%89%E3%83%B3%E3%83%BB%E3%82%AD%E3%83%9B%E3%83%BC%E3%83%86%20%E9%81%93%E9%A0%93%E5%A0%80%E5%BE%A1%E5%A0%82%E7%AD%8B%E5%BA%97%20%E5%A4%A7%E9%98%AA%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E8%A5%BF%E5%BF%83%E6%96%8E%E6%A9%8B2-5-9" target="_blank" rel="noopener">道頓堀御堂筋店</a>。</p></div></div>
+        </div>
+      </article>
+    </section>
+
+    <section id="day5" class="day-panel">
+      <div class="day-header">
+        <div class="summary"><h2>Day 5｜5/31（日）返程：關西機場</h2><p>15:20 航班，建議 13:20 前抵達機場。退稅、托運與安檢都可能排隊，早點出發比較安心。</p></div>
+        <div class="quick-grid"><div class="quick-card"><h3>航班</h3><p>15:20 起飛</p></div><div class="quick-card"><h3>機場抵達</h3><p>13:20 前較安心</p></div><div class="quick-card"><h3>午餐</h3><p>551 蓬萊、ぼてぢゅう或美食街</p></div></div>
+      </div>
+      <div class="route-map"><button class="map-toggle" data-map="map-day5"><span>展開 Day 5 行程圖</span><span>＋</span></button><div id="map-day5" class="map-panel"><div class="no-map">目前資料夾只有 1.png 到 4.png；Day 5 先以時間軸呈現。</div></div></div>
+      <article class="timeline-wrap">
+        <h3>詳細時間軸</h3>
+        <div class="timeline">
+          <div class="stop meal"><div class="time">08:30-09:30</div><div class="stop-card"><h4>早餐</h4><p>飯店附近、便利商店、難波站咖啡或麵包。退房日不要跑太遠。</p><div class="tags"><span class="tag">早餐</span></div></div></div>
+          <div class="stop"><div class="time">09:30-10:45</div><div class="stop-card"><h4>整理行李、退房</h4><p>確認護照、票券、伴手禮液體限制。</p></div></div>
+          <div class="stop"><div class="time">10:45-11:20</div><div class="stop-card"><h4>短暫補買伴手禮</h4><p>不建議跑太遠，以車站或飯店附近為主。</p></div></div>
+          <div class="stop"><div class="time">11:35-11:50</div><div class="stop-card"><h4>出發去關西機場</h4><p>新今宮或難波搭南海前往 KIX。</p></div></div>
+          <div class="stop"><div class="time">12:35-13:10</div><div class="stop-card"><h4>抵達關西機場</h4><p>先辦登機與托運，再吃午餐較安心。</p></div></div>
+          <div class="stop meal"><div class="time">13:10-14:10</div><div class="stop-card"><h4>機場午餐</h4><p>推薦 <a href="https://www.google.com/maps/search/?api=1&query=551%E8%93%AC%E8%8E%B1%20%E9%96%A2%E8%A5%BF%E7%A9%BA%E6%B8%AF%E5%BA%97%20%E9%96%A2%E8%A5%BF%E7%A9%BA%E6%B8%AF%E7%AC%AC1%E3%82%BF%E3%83%BC%E3%83%9F%E3%83%8A%E3%83%AB2%E9%9A%8E" target="_blank" rel="noopener">551蓬莱 関西空港店</a>、<a href="https://www.google.com/maps/search/?api=1&query=%E3%81%BC%E3%81%A6%E3%81%A2%E3%82%85%E3%81%86%201946%20%E9%96%A2%E8%A5%BF%E5%9B%BD%E9%9A%9B%E7%A9%BA%E6%B8%AF%20%E7%AC%AC1%E3%82%BF%E3%83%BC%E3%83%9F%E3%83%8A%E3%83%AB%202F" target="_blank" rel="noopener">ぼてぢゅう 1946 関西国際空港</a> 或機場美食街。</p><div class="tags"><span class="tag">午餐</span><span class="tag">機場</span></div></div></div>
+          <div class="stop"><div class="time">14:10-15:20</div><div class="stop-card"><h4>安檢、登機</h4><p>國際線請留足排隊時間。</p></div></div>
+        </div>
+      </article>
+      <div class="notice">Day 5 目前沒有對應行程圖檔；若之後補上 `5.png`，我已把展開區保留好，可以直接接上。</div>
+    </section>
+
+    <p class="footer">資料整理自 `大阪五日行程_含餐食時間軸.md`。餐廳與景點營業狀態會變動，出發前一天建議再開 Google Maps 確認。</p>
+  </main>
+
+  <script>
+    const dayTabs = document.querySelectorAll(".day-tab");
+    const dayPanels = document.querySelectorAll(".day-panel");
+
+    dayTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        dayTabs.forEach((item) => item.classList.remove("active"));
+        dayPanels.forEach((panel) => panel.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById(tab.dataset.day).classList.add("active");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
+
+    const modeTabs = document.querySelectorAll(".mode-tab");
+    const modePanels = document.querySelectorAll(".itinerary-mode");
+
+    modeTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        modeTabs.forEach((item) => item.classList.remove("active"));
+        modePanels.forEach((panel) => {
+          panel.classList.remove("active");
+          panel.hidden = true;
+        });
+        tab.classList.add("active");
+        const target = document.querySelector(`[data-mode-panel="${tab.dataset.mode}"]`);
+        target.classList.add("active");
+        target.hidden = false;
+      });
+    });
+
+    document.querySelectorAll(".map-toggle").forEach((button) => {
+      button.addEventListener("click", () => {
+        const panel = document.getElementById(button.dataset.map);
+        const open = panel.classList.toggle("open");
+        button.querySelector("span:last-child").textContent = open ? "－" : "＋";
+      });
+    });
+  </script>
+</body>
+</html>
